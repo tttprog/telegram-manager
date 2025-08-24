@@ -7,22 +7,25 @@
             class="lg:block rounded-4xl" alt="LOGIN IMAGE">
         </div>
 
-        <UForm :schema="schema" :state="state" class="w-full lg:w-1/2 flex flex-col gap-3" @submit="onSubmit">
-          <UFormField label="Email" name="email">
-            <UInput v-model="state.email" class="w-full" size="xl" />
-          </UFormField>
+        <div class="w-full lg:w-1/2 flex flex-col gap-10">
+          <h1 class="text-2xl font-bold self-center">Register</h1>
+          <UForm :schema="schema" :state="state" class="w-full flex flex-col gap-3" @submit="onSubmit">
+            <UFormField label="Email" name="email">
+              <UInput v-model="state.email" class="w-full" size="xl" />
+            </UFormField>
 
-          <UFormField label="Password" name="password">
-            <UInput v-model="state.password" type="password" class="w-full" size="xl" />
-          </UFormField>
-          <UFormField label="Password" name="password">
-            <UInput v-model="state.password" type="password" class="w-full" size="xl" />
-          </UFormField>
-          <UButton type="submit" :loading="loading" class="justify-center w-full lg:w-1/4 cursor-pointer" size="xl">
-            Register
-          </UButton>
-          <u-link class="self-end" :to="{ name: 'login' }">Alread have an account? Login</u-link>
-        </UForm>
+            <UFormField label="Password" name="password">
+              <UInput v-model="state.password" type="password" class="w-full" size="xl" />
+            </UFormField>
+            <UFormField label="Password" name="password">
+              <UInput v-model="state.password" type="password" class="w-full" size="xl" />
+            </UFormField>
+            <UButton type="submit" :loading="loading" class="justify-center w-full lg:w-1/4 cursor-pointer" size="xl">
+              Register
+            </UButton>
+            <u-link class="self-end" :to="{ name: 'login' }">Alread have an account? Login</u-link>
+          </UForm>
+        </div>
       </div>
     </u-container>
   </div>

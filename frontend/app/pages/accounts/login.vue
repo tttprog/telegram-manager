@@ -7,25 +7,28 @@
             class="lg:block rounded-4xl" alt="LOGIN IMAGE">
         </div>
 
-        <UForm :schema="schema" :state="state" class="w-full lg:w-1/2 flex flex-col gap-3" @submit="onSubmit">
-          <UFormField label="Email" name="email">
-            <UInput v-model="state.email" class="w-full" size="xl" />
-          </UFormField>
-
-          <UFormField label="Password" name="password">
-            <UInput v-model="state.password" type="password" class="w-full" size="xl" />
-          </UFormField>
-          <div class="flex items-center justify-between w-full">
-            <UFormField label="Remember Me" name="remember" class="flex items-center gap-3">
-              <UCheckbox v-model="state.remember" type="checkbox" class="w-full" size="xl" />
+        <div class="w-full lg:w-1/2 flex flex-col gap-10">
+          <h1 class="self-center text-2xl font-bold">Login</h1>
+          <UForm :schema="schema" :state="state" class="w-full flex flex-col gap-3" @submit="onSubmit">
+            <UFormField label="Email" name="email">
+              <UInput v-model="state.email" class="w-full" size="xl" />
             </UFormField>
-            <u-link :to="{ name: 'forgotpassword' }">Forgot password?</u-link>
-          </div>
-          <UButton type="submit" :loading="loading" class="justify-center w-full lg:w-1/4 cursor-pointer" size="xl">
-            Login
-          </UButton>
-          <u-link class="self-end" :to="{ name: 'register' }">Do not have an account?</u-link>
-        </UForm>
+
+            <UFormField label="Password" name="password">
+              <UInput v-model="state.password" type="password" class="w-full" size="xl" />
+            </UFormField>
+            <div class="flex items-center justify-between w-full">
+              <UFormField label="Remember Me" name="remember" class="flex items-center gap-3">
+                <UCheckbox v-model="state.remember" type="checkbox" class="w-full" size="xl" />
+              </UFormField>
+              <u-link :to="{ name: 'forgotpassword' }">Forgot password?</u-link>
+            </div>
+            <UButton type="submit" :loading="loading" class="justify-center w-full lg:w-1/4 cursor-pointer" size="xl">
+              Login
+            </UButton>
+            <u-link class="self-end" :to="{ name: 'register' }">Do not have an account?</u-link>
+          </UForm>
+        </div>
 
       </div>
     </u-container>
@@ -33,6 +36,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useAuthStore } from "@/stores/auth"
+
 definePageMeta({
   name: 'login',
 })
@@ -45,9 +50,11 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { UCheckbox } from '#components'
 
+
+
 const schema = z.object({
   email: z.string("Required").email('Invalid email'),
-  password: z.string("Required").min(8, 'Must be at least 8 characters'),
+  password: z.string("Required"),
   remember: z.boolean()
 })
 
@@ -59,12 +66,18 @@ const state = reactive<Partial<Schema>>({
   remember: true,
 })
 
+const authStore = useAuthStore()
+
 const toast = useToast()
 const loading = ref(false)
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   loading.value = true
-  toast.add({ title: 'Success', description: 'Login successfully.', color: 'success', icon: "solar:check-square-bold" })
-  console.log(event.data)
+  const loginStatus = await authStore.login(event.data)
+  if (loginStatus) {
+    toast.add({ title: 'Success', description: 'Login successfully.', color: 'success', icon: "solar:check-square-bold" })
+  } else {
+    toast.add({ title: 'Faild', description: 'Login Faild.', color: 'error', icon: "solar:close-circle-bold" })
+  }
   loading.value = false
 }
 </script>
